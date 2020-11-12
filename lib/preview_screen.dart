@@ -20,12 +20,13 @@ class PreviewScreen extends StatefulWidget {
 }
 
 class _PreviewScreenState extends State<PreviewScreen>{
-  PageController controller = PageController(initialPage: 0);
+  PageController controller = PageController(initialPage: 0
+  ,viewportFraction: 0.85);
   int currentindex=0;
   @override
   void initState() {
     // TODO: implement initState
-    Future.delayed(const Duration(milliseconds: 500), () {
+    /*Future.delayed(const Duration(milliseconds: 500), () {
       if(widget.imgPaths.length>1) {
         Fluttertoast.showToast(
             msg: "Swipe to preview!!",
@@ -40,7 +41,17 @@ class _PreviewScreenState extends State<PreviewScreen>{
           duration: Duration(milliseconds: 600), curve: Curves.linear);
       controller.animateToPage(0,
           duration: Duration(milliseconds: 300), curve: Curves.linear);
-    });
+    });*/
+    if(widget.imgPaths.length>1) {
+      Fluttertoast.showToast(
+          msg: "Swipe to preview!!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.white,
+          textColor: Colors.black,
+          fontSize: 16.0);
+    }
     super.initState();
   }
   @override
@@ -68,10 +79,13 @@ class _PreviewScreenState extends State<PreviewScreen>{
                     });
                   },
                   children: widget.imgPaths
-                      .map((e) => Image.file(
-                            File(e),
-                            fit: BoxFit.fill,
-                          ))
+                      .map((e) => Padding(
+                    padding: EdgeInsets.fromLTRB(UIUtills().getProportionalWidth(width: 10), 0, UIUtills().getProportionalWidth(width: 10), 0),
+                        child: Image.file(
+                              File(e),
+                              fit: BoxFit.fill,
+                            ),
+                      ))
                       .toList(),
                 ),
               ),
@@ -111,6 +125,9 @@ class _PreviewScreenState extends State<PreviewScreen>{
                             widget.imgPaths.removeAt(currentindex);
                             if(currentindex==widget.imgPaths.length){
                             currentindex--;
+                            }
+                            if(widget.imgPaths.length==0){
+                              Navigator.of(context).pop(true);
                             }
                           });
                         },

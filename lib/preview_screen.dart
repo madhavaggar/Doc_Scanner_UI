@@ -13,24 +13,23 @@ import 'package:vibration/vibration.dart';
 
 class PreviewScreen extends StatefulWidget {
   final List<String> imgPaths;
+
   PreviewScreen({this.imgPaths});
 
   @override
   _PreviewScreenState createState() => _PreviewScreenState();
 }
 
-class _PreviewScreenState extends State<PreviewScreen>{
+class _PreviewScreenState extends State<PreviewScreen> {
   PageController controller = PageController();
-  int currentindex=0;
+  int currentindex = 0;
+
   @override
   void initState() {
     super.initState();
-    controller=PageController(
-      initialPage: 0,
-      keepPage: true,
-      viewportFraction: 0.85
-    );
-    if(widget.imgPaths.length>1) {
+    controller =
+        PageController(initialPage: 0, keepPage: true, viewportFraction: 0.85);
+    if (widget.imgPaths.length > 1) {
       Fluttertoast.showToast(
           msg: "Swipe to preview!!",
           toastLength: Toast.LENGTH_SHORT,
@@ -39,20 +38,9 @@ class _PreviewScreenState extends State<PreviewScreen>{
           backgroundColor: Colors.white,
           textColor: Colors.black,
           fontSize: 16.0);
-      controller.addListener(() {
-        if (controller.page.round() != currentindex) {
-          setState(() {
-            controller.animateToPage(1, duration: Duration(milliseconds: 100), curve: Curves.linear);
-            controller.animateToPage(0, duration: Duration(milliseconds: 300), curve: Curves.linear);
-            currentindex =  controller.page.round();
-
-          });
-        }
-
-      });
     }
-
   }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -72,21 +60,25 @@ class _PreviewScreenState extends State<PreviewScreen>{
                 child: PageView(
                   physics: BouncingScrollPhysics(),
                   controller: controller,
-                  // onPageChanged: (index) {
-                  //   setState(() {
-                  //     currentindex = index;
-                  //   });
-                  // },
+                  onPageChanged: (index) {
+                    setState(() {
+                      currentindex = index;
+                    });
+                  },
                   children: widget.imgPaths
                       .map((e) => Padding(
-                    padding: EdgeInsets.fromLTRB(UIUtills().getProportionalWidth(width: 10), 0, UIUtills().getProportionalWidth(width: 10), 0),
-                        child: GestureDetector(
-                          child: Image.file(
+                            padding: EdgeInsets.fromLTRB(
+                                UIUtills().getProportionalWidth(width: 10),
+                                0,
+                                UIUtills().getProportionalWidth(width: 10),
+                                0),
+                            child: GestureDetector(
+                              child: Image.file(
                                 File(e),
                                 fit: BoxFit.fill,
                               ),
-                        ),
-                      ))
+                            ),
+                          ))
                       .toList(),
                 ),
               ),
@@ -124,10 +116,10 @@ class _PreviewScreenState extends State<PreviewScreen>{
                           Vibration.vibrate(duration: 200);
                           setState(() {
                             widget.imgPaths.removeAt(currentindex);
-                            if(currentindex==widget.imgPaths.length){
-                            currentindex--;
+                            if (currentindex == widget.imgPaths.length) {
+                              currentindex--;
                             }
-                            if(widget.imgPaths.length==0){
+                            if (widget.imgPaths.length == 0) {
                               Navigator.pop(context);
                             }
                           });
@@ -169,4 +161,3 @@ class _PreviewScreenState extends State<PreviewScreen>{
     ].request();
   }
 }
-

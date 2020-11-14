@@ -209,16 +209,7 @@ class _DocListState extends State<DocList> {
                               ),
                             ),
                             onPressed: () {
-                              setState(() {
-                                Vibration.vibrate(duration: 200);
-                                tempcont.removeAt(index);
-                                disptempcont = tempcont;
-                                if (selectedSortOption == "Asc") {
-                                  disptempcont.sort((a, b) => a.compareTo(b));
-                                } else if (selectedSortOption == "Desc") {
-                                  disptempcont.sort((b, a) => a.compareTo(b));
-                                }
-                              });
+                              showAlertDialog(context, index);
                             },
                             trailingIcon: Icon(
                               Icons.delete,
@@ -263,4 +254,48 @@ class _DocListState extends State<DocList> {
       ),
     );
   }
+
+  showAlertDialog(BuildContext context , int index) {
+
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed:  () {Navigator.of(context).pop();},
+    );
+    Widget continueButton = FlatButton(
+      child: Text("Yes"),
+      onPressed:  () {
+        setState(() {
+          Vibration.vibrate(duration: 200);
+          tempcont.removeAt(index);
+          disptempcont = tempcont;
+          if (selectedSortOption == "Asc") {
+            disptempcont.sort((a, b) => a.compareTo(b));
+          } else if (selectedSortOption == "Desc") {
+            disptempcont.sort((b, a) => a.compareTo(b));
+          }
+        });
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Are you sure?"),
+      content: Text("Document will be deleted permanently."),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
 }

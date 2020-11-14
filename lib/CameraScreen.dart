@@ -21,10 +21,9 @@ class _CameraScreenState extends State with RouteAware {
   List cameras;
   int selectedCameraIndex;
   List<String> imgPaths = List<String>();
-
   @override
   void initState() {
-    super.initState();
+     super.initState();
     availableCameras().then((availableCameras) {
       cameras = availableCameras;
 
@@ -79,7 +78,7 @@ class _CameraScreenState extends State with RouteAware {
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
+            children: [
               Expanded(
                 flex: 1,
                 child: _cameraPreviewWidget(),
@@ -98,9 +97,10 @@ class _CameraScreenState extends State with RouteAware {
                     ],
                   ),
                 ),
-              )
+              ),
+
             ],
-          ),
+          )
         ),
       ),
     );
@@ -128,129 +128,125 @@ class _CameraScreenState extends State with RouteAware {
   /// Display the control bar with buttons to take pictures
   Widget _cameraControlWidget(context) {
     return Expanded(
-      child: Align(
-        alignment: Alignment.center,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PreviewScreen(
-                            imgPaths: imgPaths,
-                          )),
-                ).then((value) => () {
-                      setState(() {
-                        Fluttertoast.showToast(
-                            msg: "Returned",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.orange,
-                            textColor: Colors.black,
-                            fontSize: 16.0);
-                      });
-                    });
-              },
-              child: Container(
-                  height: UIUtills().getProportionalHeight(height: 60),
-                  width: UIUtills().getProportionalWidth(width: 70),
-                  child: Stack(children: [
-                    Positioned(
-                      top: UIUtills().getProportionalHeight(height: 5),
-                      left: UIUtills().getProportionalWidth(width: 5),
-                      child: Container(
-                          height: UIUtills().getProportionalHeight(height: 50),
-                          width: UIUtills().getProportionalWidth(width: 60),
-                          child: imgPaths.length == 0
-                              ? null
-                              : Image.file(
-                                  File(imgPaths.elementAt(imgPaths.length - 1)),
-                                  fit: BoxFit.fill,
-                                )),
-                    ),
-                    Positioned(
-                      top: UIUtills().getProportionalHeight(height: 0),
-                      right: UIUtills().getProportionalWidth(width: 0),
-                      child: Opacity(
-                        opacity: imgPaths.length == 0 ? 0 : 1,
-                        child: Container(
-                          height: UIUtills().getProportionalHeight(height: 25),
-                          width: UIUtills().getProportionalWidth(width: 25),
-                          decoration: BoxDecoration(
-                              color: Colors.orange, shape: BoxShape.circle),
-                          child: Center(
-                            child: Text(
-                              "${imgPaths.length}",
-                              style: UIUtills().getTextStyleRegular(
-                                color: Colors.white,
-                                fontsize: 12,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                        right: UIUtills().getProportionalWidth(width: 0),
-                        top: UIUtills().getProportionalHeight(height: 25),
-                        child: Opacity(
-                          opacity: imgPaths.length == 0 ? 0 : 1,
-                          child: Container(
-                            height:
-                                UIUtills().getProportionalHeight(height: 15),
-                            width: UIUtills().getProportionalWidth(width: 15),
-                            decoration: BoxDecoration(
-                                color: Colors.white, shape: BoxShape.circle),
-                            child: Icon(
-                              Icons.chevron_right,
-                              color: Colors.black,
-                              size:
-                                  UIUtills().getProportionalHeight(height: 14),
-                            ),
-                          ),
-                        ))
-                  ])),
-            ),
-            FloatingActionButton(
-              child: Icon(
-                Icons.camera,
-                color: Colors.black,
-              ),
-              backgroundColor: Colors.white,
-              onPressed: () {
-                setState(() {
-                  _onCapturePressed(context);
-                });
-              },
-            ),
-            Container(
-              height: UIUtills().getProportionalHeight(height: 60),
-              width: UIUtills().getProportionalWidth(width: 70),
-              child: Center(
-                child: Opacity(
-                  opacity: imgPaths.length == 0 ? 0 : 1,
-                  child: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        imgPaths.clear();
-                      });
-                    },
-                    iconSize: UIUtills().getProportionalWidth(width: 30),
-                    icon: Icon(
-                      Icons.cancel_outlined,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
+    child: Align(
+    alignment: Alignment.center,
+    child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    mainAxisSize: MainAxisSize.max,
+    children: <Widget>[
+    GestureDetector(
+     onTap: () {
+    Navigator.push(context, MaterialPageRoute(
+    builder: (context) => PreviewScreen(imgPaths: imgPaths)))
+    .then((value) {
+    setState(() {
+      Fluttertoast.showToast(
+          msg: "Returned",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.orange,
+          textColor: Colors.black,
+          fontSize: 16.0);
+    });
+    });
+    },
+    child: Container(
+    height: UIUtills().getProportionalHeight(height: 60),
+    width: UIUtills().getProportionalWidth(width: 70),
+    child: Stack(children: [
+    Positioned(
+    top: UIUtills().getProportionalHeight(height: 5),
+    left: UIUtills().getProportionalWidth(width: 5),
+    child: Container(
+    height: UIUtills().getProportionalHeight(height: 50),
+    width: UIUtills().getProportionalWidth(width: 60),
+    child: imgPaths.length == 0
+    ? null
+    : Image.file(
+    File(imgPaths.elementAt(imgPaths.length - 1)),
+    fit: BoxFit.fill,
+    )),
+    ),
+    Positioned(
+    top: UIUtills().getProportionalHeight(height: 0),
+    right: UIUtills().getProportionalWidth(width: 0),
+    child: Opacity(
+    opacity: imgPaths.length == 0 ? 0 : 1,
+    child: Container(
+    height: UIUtills().getProportionalHeight(height: 25),
+    width: UIUtills().getProportionalWidth(width: 25),
+    decoration: BoxDecoration(
+    color: Colors.orange, shape: BoxShape.circle),
+    child: Center(
+    child: Text(
+    "${imgPaths.length}",
+    style: UIUtills().getTextStyleRegular(
+    color: Colors.white,
+    fontsize: 12,
+    ),
+    ),
+    ),
+    ),
+    ),
+    ),
+    Positioned(
+    right: UIUtills().getProportionalWidth(width: 0),
+    top: UIUtills().getProportionalHeight(height: 25),
+    child: Opacity(
+    opacity: imgPaths.length == 0 ? 0 : 1,
+    child: Container(
+    height:
+    UIUtills().getProportionalHeight(height: 15),
+    width: UIUtills().getProportionalWidth(width: 15),
+    decoration: BoxDecoration(
+    color: Colors.white, shape: BoxShape.circle),
+    child: Icon(
+    Icons.chevron_right,
+    color: Colors.black,
+    size:
+    UIUtills().getProportionalHeight(height: 14),
+    ),
+    ),
+    ))
+    ])),
+    ),
+    FloatingActionButton(
+    child: Icon(
+    Icons.camera,
+    color: Colors.black,
+    ),
+    backgroundColor: Colors.white,
+    onPressed: () {
+    setState(() {
+    _onCapturePressed(context);
+    });
+    },
+    ),
+    Container(
+    height: UIUtills().getProportionalHeight(height: 60),
+    width: UIUtills().getProportionalWidth(width: 70),
+    child: Center(
+    child: Opacity(
+    opacity: imgPaths.length == 0 ? 0 : 1,
+    child: IconButton(
+    onPressed: () {
+    setState(() {
+    imgPaths.clear();
+    });
+    },
+    iconSize: UIUtills().getProportionalWidth(width: 30),
+    icon: Icon(
+    Icons.cancel_outlined,
+    color: Colors.white,
+    ),
+    ),
+    ),
+    ),
+    )
+    ],
+    ),
+    ),
     );
   }
 

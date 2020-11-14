@@ -20,28 +20,16 @@ class PreviewScreen extends StatefulWidget {
 }
 
 class _PreviewScreenState extends State<PreviewScreen>{
-  PageController controller = PageController(initialPage: 0
-  ,viewportFraction: 0.85);
+  PageController controller = PageController();
   int currentindex=0;
   @override
   void initState() {
-    // TODO: implement initState
-    /*Future.delayed(const Duration(milliseconds: 500), () {
-      if(widget.imgPaths.length>1) {
-        Fluttertoast.showToast(
-            msg: "Swipe to preview!!",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.white,
-            textColor: Colors.black,
-            fontSize: 16.0);
-      }
-      controller.animateToPage(1,
-          duration: Duration(milliseconds: 600), curve: Curves.linear);
-      controller.animateToPage(0,
-          duration: Duration(milliseconds: 300), curve: Curves.linear);
-    });*/
+    super.initState();
+    controller=PageController(
+      initialPage: 0,
+      keepPage: true,
+      viewportFraction: 0.85
+    );
     if(widget.imgPaths.length>1) {
       Fluttertoast.showToast(
           msg: "Swipe to preview!!",
@@ -51,8 +39,19 @@ class _PreviewScreenState extends State<PreviewScreen>{
           backgroundColor: Colors.white,
           textColor: Colors.black,
           fontSize: 16.0);
+      controller.addListener(() {
+        if (controller.page.round() != currentindex) {
+          setState(() {
+            controller.animateToPage(1, duration: Duration(milliseconds: 100), curve: Curves.linear);
+            controller.animateToPage(0, duration: Duration(milliseconds: 300), curve: Curves.linear);
+            currentindex =  controller.page.round();
+
+          });
+        }
+
+      });
     }
-    super.initState();
+
   }
   @override
   Widget build(BuildContext context) {
@@ -73,18 +72,20 @@ class _PreviewScreenState extends State<PreviewScreen>{
                 child: PageView(
                   physics: BouncingScrollPhysics(),
                   controller: controller,
-                  onPageChanged: (index) {
-                    setState(() {
-                      currentindex = index;
-                    });
-                  },
+                  // onPageChanged: (index) {
+                  //   setState(() {
+                  //     currentindex = index;
+                  //   });
+                  // },
                   children: widget.imgPaths
                       .map((e) => Padding(
                     padding: EdgeInsets.fromLTRB(UIUtills().getProportionalWidth(width: 10), 0, UIUtills().getProportionalWidth(width: 10), 0),
-                        child: Image.file(
-                              File(e),
-                              fit: BoxFit.fill,
-                            ),
+                        child: GestureDetector(
+                          child: Image.file(
+                                File(e),
+                                fit: BoxFit.fill,
+                              ),
+                        ),
                       ))
                       .toList(),
                 ),
@@ -127,7 +128,7 @@ class _PreviewScreenState extends State<PreviewScreen>{
                             currentindex--;
                             }
                             if(widget.imgPaths.length==0){
-                              Navigator.of(context).pop(true);
+                              Navigator.pop(context);
                             }
                           });
                         },
@@ -167,7 +168,5 @@ class _PreviewScreenState extends State<PreviewScreen>{
       Permission.storage,
     ].request();
   }
-
-
-
 }
+

@@ -11,8 +11,12 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:vibration/vibration.dart';
 
+import 'CameraScreen.dart';
+import 'CameraScreenRetake.dart';
+
+// ignore: must_be_immutable
 class PreviewScreen extends StatefulWidget {
-  final List<String> imgPaths;
+  List<String> imgPaths;
 
   PreviewScreen({this.imgPaths});
 
@@ -22,13 +26,13 @@ class PreviewScreen extends StatefulWidget {
 
 class _PreviewScreenState extends State<PreviewScreen> {
   PageController controller = PageController();
-  int currentindex = 0;
+  int imgIndex = 0;
 
   @override
   void initState() {
     super.initState();
     controller =
-        PageController(initialPage: 0, keepPage: true, viewportFraction: 0.85);
+        PageController(initialPage: imgIndex, keepPage: true, viewportFraction: 0.85);
     if (widget.imgPaths.length > 1) {
       Fluttertoast.showToast(
           msg: "Swipe to preview!!",
@@ -62,7 +66,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
                   controller: controller,
                   onPageChanged: (index) {
                     setState(() {
-                      currentindex = index;
+                      imgIndex = index;
                     });
                   },
                   children: widget.imgPaths
@@ -101,7 +105,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
                             Share.file(
                                 'Share via',
                                 basename(
-                                    widget.imgPaths.elementAt(currentindex)),
+                                    widget.imgPaths.elementAt(imgIndex)),
                                 bytes.buffer.asUint8List(),
                                 'image/path');
                           });
@@ -115,9 +119,9 @@ class _PreviewScreenState extends State<PreviewScreen> {
                         onPressed: () {
                           Vibration.vibrate(duration: 200);
                           setState(() {
-                            widget.imgPaths.removeAt(currentindex);
-                            if (currentindex == widget.imgPaths.length) {
-                              currentindex--;
+                            widget.imgPaths.removeAt(imgIndex);
+                            if (imgIndex == widget.imgPaths.length) {
+                              imgIndex--;
                             }
                             if (widget.imgPaths.length == 0) {
                               Navigator.pop(context);
@@ -125,6 +129,25 @@ class _PreviewScreenState extends State<PreviewScreen> {
                           });
                         },
                       ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.repeat_outlined,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                           Navigator.push(
+                             context,
+                             MaterialPageRoute(
+                               builder: (context) => CameraScreenRetake(
+                                 imgPaths: widget.imgPaths,
+                                 imgIndex: imgIndex,
+                               )),
+                           ).then((value) {
+                             setState(() {
+                             });
+                           });
+                        },
+                      )
                     ],
                   ),
                 ),
@@ -137,7 +160,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
   }
 
   Future<ByteData> getBytesFromFile() async {
-    Uint8List bytes = File(widget.imgPaths.elementAt(currentindex))
+    Uint8List bytes = File(widget.imgPaths.elementAt(imgIndex))
         .readAsBytesSync() as Uint8List;
     return ByteData.view(bytes.buffer);
   }

@@ -146,6 +146,7 @@ class _CameraScreenState extends State with RouteAware {
                 ).then((value) {
                       setState(() {
                       });
+                      _initCameraController(cameras[0]).then((void v) {});
                     });
               },
               child: Container(

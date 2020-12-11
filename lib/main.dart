@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:scanner_app/doclistpage.dart';
 import 'package:scanner_app/settingspage.dart';
 import 'package:scanner_app/uiuitils.dart';
@@ -20,6 +21,8 @@ class MyApp extends StatelessWidget {
       home: BottomNavBarV2(),
     );
   }
+
+
 }
 
 class BottomNavBarV2 extends StatefulWidget {
@@ -47,80 +50,110 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
         .of(context)
         .size;
     UIUtills().updateScreenDimesion(width: size.width, height: size.height);
-    return Scaffold(
-      body: _widgetOptions.elementAt(currentIndex),
-      bottomNavigationBar: Container(
-        height: UIUtills().getProportionalHeight(height: 80),
-        child: Stack(children: [
-          Positioned(
-            bottom: 0,
-            left: 0,
-            child: Container(
-              width: size.width,
-              height: UIUtills().getProportionalHeight(height: 80),
-              child: Stack(
-                overflow: Overflow.visible,
-                children: [
-                  CustomPaint(
-                    size: Size(UIUtills().getProportionalWidth(width: size.width),
-                        UIUtills().getProportionalHeight(height: 80)),
-                    painter: BNBCustomPainter(),
-                  ),
-                  Center(
-                    heightFactor: 0.6,
-                    child: FloatingActionButton(
-                        backgroundColor: Colors.deepPurpleAccent,
-                        child: Icon(Icons.add_sharp),
-                        elevation: 0.1,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => CameraScreen()),
-                          );
-                        }),
-                  ),
-                  Container(
-                    width: size.width,
-                    height: UIUtills().getProportionalHeight(height: 80),
-                    padding: EdgeInsets.fromLTRB(
-                        0, 0, 0, UIUtills().getProportionalHeight(height: 5)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IconButton(
-                            icon: Icon(
-                              Icons.article_outlined,
-                              color: currentIndex == 0
-                                  ? Colors.deepPurpleAccent
-                                  : Colors.grey.shade400,
-                            ),
-                            onPressed: () {
-                              setBottomBarIndex(0);
-                            }),
-                        Container(
-                          width:
-                          UIUtills().getProportionalWidth(width: size.width) *
-                              0.17,
-                        ),
-                        IconButton(
-                            icon: Icon(
-                              Icons.settings,
-                              color: currentIndex == 1
-                                  ? Colors.deepPurpleAccent
-                                  : Colors.grey.shade400,
-                            ),
-                            onPressed: () {
-                              setBottomBarIndex(1);
-                            }),
-                      ],
+    return WillPopScope(
+
+      child: Scaffold(
+        body: _widgetOptions.elementAt(currentIndex),
+        bottomNavigationBar: Container(
+          height: UIUtills().getProportionalHeight(height: 80),
+          child: Stack(children: [
+            Positioned(
+              bottom: 0,
+              left: 0,
+              child: Container(
+                width: size.width,
+                height: UIUtills().getProportionalHeight(height: 80),
+                child: Stack(
+                  overflow: Overflow.visible,
+                  children: [
+                    CustomPaint(
+                      size: Size(UIUtills().getProportionalWidth(width: size.width),
+                          UIUtills().getProportionalHeight(height: 80)),
+                      painter: BNBCustomPainter(),
                     ),
-                  )
-                ],
+                    Center(
+                      heightFactor: 0.6,
+                      child: FloatingActionButton(
+                          backgroundColor: Colors.deepPurpleAccent,
+                          child: Icon(Icons.add_sharp),
+                          elevation: 0.1,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => CameraScreen()),
+                            );
+                          }),
+                    ),
+                    Container(
+                      width: size.width,
+                      height: UIUtills().getProportionalHeight(height: 80),
+                      padding: EdgeInsets.fromLTRB(
+                          0, 0, 0, UIUtills().getProportionalHeight(height: 5)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IconButton(
+                              icon: Icon(
+                                Icons.article_outlined,
+                                color: currentIndex == 0
+                                    ? Colors.deepPurpleAccent
+                                    : Colors.grey.shade400,
+                              ),
+                              onPressed: () {
+                                setBottomBarIndex(0);
+                              }),
+                          Container(
+                            width:
+                            UIUtills().getProportionalWidth(width: size.width) *
+                                0.17,
+                          ),
+                          IconButton(
+                              icon: Icon(
+                                Icons.settings,
+                                color: currentIndex == 1
+                                    ? Colors.deepPurpleAccent
+                                    : Colors.grey.shade400,
+                              ),
+                              onPressed: () {
+                                setBottomBarIndex(1);
+                              }),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        ]),
+          ]),
+        ),
       ),
+      onWillPop: () {
+        return showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Confirm Exit"),
+                content: Text("Are you sure you want to exit?"),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text("Yes"),
+                    onPressed: () {
+                      SystemNavigator.pop();
+                    },
+                  ),
+                  FlatButton(
+                    child: Text("No"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            }
+        );
+        return Future.value(true);
+      },
     );
   }
 }
@@ -151,6 +184,8 @@ class BNBCustomPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) {
     return false;
   }
+
+
 }
 
 

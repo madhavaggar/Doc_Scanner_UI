@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
@@ -6,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:vibration/vibration.dart';
 
 class DocList extends StatefulWidget {
+
   @override
   _DocListState createState() => _DocListState();
 }
@@ -71,6 +74,23 @@ class _DocListState extends State<DocList> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  Visibility(
+                    visible: multiSelect? true:false,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: Colors.black54,
+                      ),
+                      iconSize: UIUtills().getProportionalWidth(width: 20),
+                      onPressed: () {
+                        setState(() {
+                          multiSelect = false;
+                          numDocsChecked = 0;
+                          checkBoxValues = List.filled(tempcont.length, false, growable: true);
+                        });
+                      },
+                    ),
+                  ),
                   Visibility(
                     visible: multiSelect? false:true,
                     child: Text(
@@ -232,6 +252,12 @@ class _DocListState extends State<DocList> {
                 ),
               ),
             ),
+            Visibility(
+              visible: multiSelect? true:false,
+              child: Container(
+                height: UIUtills().getProportionalHeight(height: 25),
+              ),
+            ),
             Container(
               height: UIUtills().getProportionalHeight(height: 400),
               color: Colors.white54,
@@ -340,7 +366,6 @@ class _DocListState extends State<DocList> {
       ),
     );
   }
-
 
   void deleteDocuments(int index){
     if(index != -1)

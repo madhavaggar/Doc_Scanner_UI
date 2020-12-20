@@ -490,6 +490,8 @@ class _contourAdjustState extends State<contourAdjust> {
           backgroundColor: Colors.white,
           textColor: Colors.black,
           fontSize: 16.0);
+      setState(() {});
+      widget.contourChanged();
     }
     eng1 = false;
     eng2 = false;
@@ -499,7 +501,7 @@ class _contourAdjustState extends State<contourAdjust> {
 }
 
 class ImageEditor extends CustomPainter {
-  ValueNotifier<contourObjState> notifier, m;
+  ValueNotifier<contourObjState> notifier;
   Paint paint0;
   Paint paint1;
   Context context;
@@ -560,12 +562,10 @@ class ImageEditor extends CustomPainter {
         new Offset(notifier.value.x1.elementAt(notifier.value.index),
             notifier.value.y1.elementAt(notifier.value.index)),
         paint1);
-    print("repaint");
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
-    print("bool");
     return true;
   }
 
